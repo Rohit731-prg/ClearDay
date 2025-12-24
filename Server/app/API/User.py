@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Form, Response, HttpException, UploadFile
+from fastapi import APIRouter, Form, Response, HTTPException, UploadFile
 from app.Config.ConnectDb import collection_user
 from app.Utils.hashPassword import generatehash
 import random
 from app.Utils.uploadImage import uploadImage
 from app.Curd.UserCurd import signUp, authentication, login
+from app.Database.Model.UserModel import UserModel
 
 router = APIRouter(
     prefix="/user",
@@ -11,7 +12,7 @@ router = APIRouter(
 )
 
 @router.post("/signup")
-async def signUp(
+async def signUpRoute(
     response: Response,
     name: str = Form(...),
     email: str = Form(...),
@@ -21,7 +22,7 @@ async def signUp(
     try:
         is_exist = await collection_user.find_one({"email": email})
         if is_exist:
-            raise HttpException(status_code=400, detail="User already exist")
+            raise HTTPException(status_code=400, detail="User already exist")
         
         imageURL = await uploadImage(image)
         hashedPassword = generatehash(password)
@@ -34,11 +35,11 @@ async def signUp(
             "otp": otp,
             "image": imageURL["url"]
         }
-        res = await signUp(newUser)
+        res = await signUp(UserModel(**newUser))
         response.status_code = 201
         return res
     except Exception as e:
-        raise HttpException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
     
 
 @router.put("/authentication")
@@ -52,7 +53,7 @@ async def authenticationRoute(
         response.status_code = 200
         return res
     except Exception as e:
-        raise HttpException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
     
 
 @router.post("/login")
@@ -66,4 +67,4 @@ async def loginRoute(
         response.status_code = 200
         return res
     except Exception as e:
-        raise HttpException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))

@@ -7,3 +7,4 @@ client = AsyncIOMotorClient(url)
 db = client["clearday"]
 
 collection_user = db["users"]
+collection_subscription = db["subscriptions"]

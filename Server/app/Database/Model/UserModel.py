@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class UserModel(BaseModel):
-    name: str
-    email: str
-    password: str
-    auth: bool
-    otp: str
-    image: str
+    name: str = Field(..., min_length=1)
+    email: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)
+    auth: bool = Field(...)
+    otp: str = Field(..., min_length=4)
+    image: str = Field(...)
 
 class LoginModel(BaseModel):
-    email: str
-    password: str
+    email: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)

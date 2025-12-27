@@ -8,3 +8,4 @@ db = client["clearday"]
 
 collection_user = db["users"]
 collection_subscription = db["subscriptions"]
+collection_bill = db["bills"]
